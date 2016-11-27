@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-
+#import "Person.h"
 @interface ViewController ()
 
 @end
@@ -17,6 +17,28 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    Person *person = [[Person alloc] init];
+    person.name = @"xiaowang";
+    person.age = 10;
+    person.gender = female;
+    
+#if 1  // 归档
+    NSString *string = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    
+    NSString *path = [string stringByAppendingString:@"/Person.text"];
+    [NSKeyedArchiver archiveRootObject:person toFile:path];
+    NSLog(@"归档成功");
+    
+#else
+    // 解档
+    NSString *filePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingString:@"/Person.text"];
+    Person *p = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
+    
+    NSLog(@"解档成功：%@",p);
+
+#endif
+    
 }
 
 - (void)didReceiveMemoryWarning {

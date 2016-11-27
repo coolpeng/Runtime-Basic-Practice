@@ -33,7 +33,7 @@
     
     unsigned int count = 0;
     
-    // 获取指向这个类的成员变量数组的指针
+    // 获得指向该类所有成员变量的指针
     Ivar *ivars = class_copyIvarList([Person class], &count);
     for (int i = 0; i < count; i++) {
         Ivar ivar = ivars[i];//获取单个成员变量
@@ -47,7 +47,7 @@
     
     unsigned int count = 0;
     
-    // 获取指向一个类的属性数组的指针
+    // 获得指向该类所有属性的指针
     objc_property_t *properties = class_copyPropertyList([Person class], &count);
     for (int i = 0; i < count ; i++) {
         objc_property_t property = properties[i];// 获取单个属性
