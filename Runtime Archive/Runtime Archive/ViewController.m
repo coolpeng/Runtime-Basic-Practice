@@ -23,7 +23,7 @@
     person.age = 10;
     person.gender = female;
     
-#if 1  // 归档
+#if 0  // 归档
     NSString *string = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
     
     NSString *path = [string stringByAppendingString:@"/Person.text"];

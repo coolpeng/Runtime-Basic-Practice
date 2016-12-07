@@ -12,6 +12,11 @@
 
 @implementation Person
 
+// 设置不需要归解档的属性
+- (NSArray *)ignoredNames {
+    return @[@"name"];
+}
+
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     
     unsigned int count = 0;
@@ -24,10 +29,22 @@
         // 获取每个属性的名字
         objc_property_t property = properties[i];
         const char *name = property_getName(property);
-        NSString *key = [NSString stringWithUTF8String:name];// 转成OC的字符串
-        // 利用KVC取出每个属性对应的数值
-        [aCoder encodeObject:[self valueForKeyPath:key] forKey:key];
+        NSString *key = [NSString stringWithUTF8String:name];// 将每个属性名转换为NSString对象类型
+        
+        // 忽略不需要归档的属性
+        if ([[self ignoredNames] containsObject:key]) {
+            continue;
+        }
+        
+        // 通过属性名，取出对应的值
+        id value = [self valueForKeyPath:key];
+        
+        // 再将值归档
+        [aCoder encodeObject:value forKey:key];
     }
+    
+    // 注意释放内存！
+    free(properties);
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
@@ -41,11 +58,23 @@
         
         objc_property_t property = properties[i];// 获取到每个属性
         const char *name = property_getName(property);// 获取每个属性的名字
-        NSString *key = [NSString stringWithUTF8String:name];// 转成OC字符串
+        NSString *key = [NSString stringWithUTF8String:name];// 将每个属性名转换为NSString对象类型
         
-        //解码每个属性,利用kVC取出每个属性对应的数值
-        [self setValue:[aDecoder decodeObjectForKey:key] forKeyPath:key];
+        // 忽略不需要解档的属性
+        if ([[self ignoredNames] containsObject:key]) {
+            continue;
+        }
+
+        // 根据属性名解档取值，无论是什么类型
+        id value = [aDecoder decodeObjectForKey:key];
+        
+        // 取出的值再设置给属性
+        [self setValue:value forKeyPath:key];
     }
+    
+    // 注意释放内存！
+    free(properties);
+    
     return self;
 }
 

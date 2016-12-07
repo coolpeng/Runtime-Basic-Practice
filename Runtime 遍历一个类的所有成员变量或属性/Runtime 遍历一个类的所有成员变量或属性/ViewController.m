@@ -41,6 +41,8 @@
         NSString *ivarName = [NSString stringWithUTF8String:name];
         PLJLog(ivarName);
     }
+    
+    free(ivars);
 }
 
 - (void)getAllProperties {
@@ -55,6 +57,8 @@
         NSString *propertyName = [NSString stringWithUTF8String:name];
         PLJLog(propertyName);
     }
+    
+    free(properties);
 }
 
 - (void)didReceiveMemoryWarning {
